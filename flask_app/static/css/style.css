@@ -1,0 +1,54 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #0f172a;
+    color: #f8fafc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+}
+
+.container {
+    padding: 40px 20px;
+    max-width: 900px;
+    margin: auto;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #38bdf8;
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #22c55e;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-bottom: 40px;
+}
+
+button:hover {
+    background-color: #16a34a;
+}
+
+.chart-section {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+    height: 400px; /* ✅ Locks chart height */
+}
+canvas {
+    height: 100% !important; /* ✅ Fixes height for Chart.js */
+}
+
+
+footer {
+    margin-top: 40px;
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
