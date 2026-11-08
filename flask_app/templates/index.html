@@ -16,6 +16,25 @@
         </div>
         <p id="trackingStatus" role="status" aria-live="polite">Tracking is stopped.</p>
 
+        <section class="summary-section" aria-label="Tracked time summaries">
+            <article class="summary-item">
+                <h2>Today</h2>
+                <p id="dailyTotal">0m</p>
+                <span>Tracked time</span>
+            </article>
+            <article class="summary-item">
+                <h2>This Week</h2>
+                <p id="weeklyTotal">0m</p>
+                <span>Since Monday</span>
+            </article>
+            <article class="summary-item">
+                <h2>This Month</h2>
+                <p id="monthlyTotal">0m</p>
+                <span>Calendar month</span>
+            </article>
+        </section>
+        <p class="summary-note">Estimated from one minute per screen capture.</p>
+
         <div class="chart-section">
             <canvas id="activityChart"></canvas>
         </div>

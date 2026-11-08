@@ -35,6 +35,65 @@ button:hover {
     background-color: #16a34a;
 }
 
+.tracking-controls button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+#stopTrackingButton {
+    background-color: #e11d48;
+}
+
+#stopTrackingButton:hover:not(:disabled) {
+    background-color: #be123c;
+}
+
+.summary-section {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin: 28px 0 0;
+    text-align: left;
+}
+
+.summary-item {
+    padding: 18px 20px;
+    background: #1e293b;
+    border-left: 3px solid #22c55e;
+}
+
+.summary-item:nth-child(2) {
+    border-left-color: #38bdf8;
+}
+
+.summary-item:nth-child(3) {
+    border-left-color: #f43f5e;
+}
+
+.summary-item h2 {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.summary-item p {
+    margin: 10px 0 4px;
+    color: #f8fafc;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.summary-item span,
+.summary-note {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.summary-note {
+    margin: 12px 0 24px;
+}
+
 .chart-section {
     background: #1e293b;
     padding: 20px;
@@ -46,6 +105,15 @@ canvas {
     height: 100% !important; /* ✅ Fixes height for Chart.js */
 }
 
+@media (max-width: 640px) {
+    .summary-section {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-item {
+        padding: 14px 16px;
+    }
+}
 
 footer {
     margin-top: 40px;
