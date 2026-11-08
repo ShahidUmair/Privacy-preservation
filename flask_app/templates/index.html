@@ -7,41 +7,86 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>📸 Screen Activity Tracker</h1>
-        <p>Track how much time you spend on different types of screen activities.</p>
-        <div class="tracking-controls">
-            <button id="startTrackingButton" onclick="startTracking()">Start Tracking</button>
-            <button id="stopTrackingButton" onclick="stopTracking()" disabled>Stop Tracking</button>
-        </div>
-        <p id="trackingStatus" role="status" aria-live="polite">Tracking is stopped.</p>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand" href="/" aria-label="Screen Activity Tracker home">
+                <span class="brand-mark" aria-hidden="true">SA</span>
+                <span>Screen Activity</span>
+            </a>
+            <nav class="side-nav" aria-label="Main navigation">
+                <button class="nav-link is-active" type="button" data-view="dashboardView" aria-current="page" onclick="showView('dashboardView')">Dashboard</button>
+                <button class="nav-link" type="button" data-view="settingsView" onclick="showView('settingsView')">Settings</button>
+            </nav>
+            <div class="sidebar-status">
+                <span class="status-indicator" aria-hidden="true"></span>
+                <span id="sidebarTrackingStatus">Tracking stopped</span>
+            </div>
+        </aside>
 
-        <section class="summary-section" aria-label="Tracked time summaries">
-            <article class="summary-item">
-                <h2>Today</h2>
-                <p id="dailyTotal">0m</p>
-                <span>Tracked time</span>
-            </article>
-            <article class="summary-item">
-                <h2>This Week</h2>
-                <p id="weeklyTotal">0m</p>
-                <span>Since Monday</span>
-            </article>
-            <article class="summary-item">
-                <h2>This Month</h2>
-                <p id="monthlyTotal">0m</p>
-                <span>Calendar month</span>
-            </article>
-        </section>
-        <p class="summary-note">Estimated from one minute per screen capture.</p>
+        <main class="main-content">
+            <section id="dashboardView" class="page-view">
+                <header class="page-header">
+                    <div>
+                        <p class="eyebrow">Activity overview</p>
+                        <h1>Dashboard</h1>
+                        <p>Review tracked screen activity and time estimates.</p>
+                    </div>
+                    <div class="tracking-controls">
+                        <button id="startTrackingButton" class="button button-primary" type="button" onclick="startTracking()">Start tracking</button>
+                        <button id="stopTrackingButton" class="button button-danger" type="button" onclick="stopTracking()" disabled>Stop tracking</button>
+                    </div>
+                </header>
+                <p id="trackingStatus" class="tracking-status" role="status" aria-live="polite">Tracking is stopped.</p>
 
-        <div class="chart-section">
-            <canvas id="activityChart"></canvas>
-        </div>
+                <section class="summary-section" aria-label="Tracked time summaries">
+                    <article class="summary-item">
+                        <h2>Today</h2>
+                        <p id="dailyTotal">0m</p>
+                        <span>Tracked time</span>
+                    </article>
+                    <article class="summary-item">
+                        <h2>This week</h2>
+                        <p id="weeklyTotal">0m</p>
+                        <span>Since Monday</span>
+                    </article>
+                    <article class="summary-item">
+                        <h2>This month</h2>
+                        <p id="monthlyTotal">0m</p>
+                        <span>Calendar month</span>
+                    </article>
+                </section>
+                <p class="summary-note">Estimated using a 75-second average between captures.</p>
 
-        <footer>
-            <p>&copy; 2024 Screen Activity Tracker. All rights reserved.</p>
-        </footer>
+                <section class="chart-section" aria-label="Today's activity by category">
+                    <h2>Today's activity</h2>
+                    <div class="chart-frame"><canvas id="activityChart"></canvas></div>
+                </section>
+            </section>
+
+            <section id="settingsView" class="page-view" hidden>
+                <header class="page-header settings-header">
+                    <div>
+                        <p class="eyebrow">Preferences</p>
+                        <h1>Settings</h1>
+                        <p>Choose where captured screenshots are stored.</p>
+                    </div>
+                </header>
+                <form id="settingsForm" class="settings-form" onsubmit="saveSettings(event)">
+                    <label for="screenshotDirectory">Screenshot folder</label>
+                    <p class="field-help">Screenshots are saved locally on this computer.</p>
+                    <div class="folder-picker-row">
+                        <input id="screenshotDirectory" name="screenshotDirectory" type="text" placeholder="Choose a folder path" autocomplete="off" required>
+                        <button class="button button-secondary" id="browseFolderButton" type="button" onclick="browseScreenshotFolder()">Browse</button>
+                    </div>
+                    <p id="settingsStatus" class="settings-status" role="status" aria-live="polite"></p>
+                    <button class="button button-primary" id="saveSettingsButton" type="submit">Save settings</button>
+                </form>
+                <section class="settings-detail">
+                    <h2>Capture schedule</h2>
+                    <p>Screens are captured at a random interval between 60 and 90 seconds while tracking is active.</p>
+                </section>
+            </section>
+        </main>
     </div>
     <script src="/static/js/script.js"></script>
 </body>
