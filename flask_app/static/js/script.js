@@ -3,6 +3,11 @@ let counts = {
     'youtube_entertainment': 0,
     'youtube_edu': 0
 };
+let trackingInterval = null;
+
+const startButton = document.getElementById('startTrackingButton');
+const stopButton = document.getElementById('stopTrackingButton');
+const trackingStatus = document.getElementById('trackingStatus');
 
 const ctx = document.getElementById('activityChart').getContext('2d');
 const chart = new Chart(ctx, {
@@ -67,12 +72,46 @@ function updateChart(label) {
 }
 
 function startTracking() {
-    setInterval(() => {
+    if (trackingInterval !== null) {
+        return;
+    }
+
+    startButton.disabled = true;
+    stopButton.disabled = false;
+    trackingStatus.textContent = 'Tracking is running. Captures occur every 60 seconds.';
+
+    trackingInterval = setInterval(() => {
         fetch('/capture')
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Capture failed (${res.status}).`);
+                }
+                return res.json();
+            })
             .then(data => {
+                if (trackingInterval === null) {
+                    return;
+                }
                 updateChart(data.activity);
                 console.log("Tracked:", data.activity);
+            })
+            .catch(error => {
+                if (trackingInterval !== null) {
+                    trackingStatus.textContent = `Tracking is running, but capture failed: ${error.message}`;
+                    console.error(error);
+                }
             });
     }, 60000);
+}
+
+function stopTracking() {
+    if (trackingInterval === null) {
+        return;
+    }
+
+    clearInterval(trackingInterval);
+    trackingInterval = null;
+    startButton.disabled = false;
+    stopButton.disabled = true;
+    trackingStatus.textContent = 'Tracking is stopped.';
 }

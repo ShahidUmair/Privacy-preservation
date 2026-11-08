@@ -10,7 +10,11 @@
     <div class="container">
         <h1>📸 Screen Activity Tracker</h1>
         <p>Track how much time you spend on different types of screen activities.</p>
-        <button onclick="startTracking()">Start Tracking</button>
+        <div class="tracking-controls">
+            <button id="startTrackingButton" onclick="startTracking()">Start Tracking</button>
+            <button id="stopTrackingButton" onclick="stopTracking()" disabled>Stop Tracking</button>
+        </div>
+        <p id="trackingStatus" role="status" aria-live="polite">Tracking is stopped.</p>
 
         <div class="chart-section">
             <canvas id="activityChart"></canvas>
