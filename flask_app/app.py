@@ -7,10 +7,11 @@ import os
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
+from activity_labeler import describe_activity
 
 app = Flask(__name__)
 MODEL = load_model('../model/model.h5')
-LABELS = ['programming', 'youtube_entertainment', 'youtube_edu']
+LABELS = ['programming', 'youtube_edu', 'youtube_entertainment']
 DEFAULT_SCREENSHOT_DIR = Path(app.root_path) / 'screenshots' / 'captured_images'
 DEFAULT_SCREENSHOT_DIR.mkdir(parents=True, exist_ok=True)
 activity_store = ActivityStore(os.path.join(app.instance_path, 'activity.sqlite3'))
@@ -30,7 +31,8 @@ def capture_and_predict():
     img_arr = np.expand_dims(img_arr, axis=0)
 
     prediction = MODEL.predict(img_arr)[0]
-    label = LABELS[np.argmax(prediction)]
+    category = LABELS[np.argmax(prediction)]
+    label = describe_activity(img, category)
     activity_store.record(label)
     return label
 

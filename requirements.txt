@@ -2,6 +2,7 @@ Flask
 tensorflow
 numpy
 Pillow
+pytesseract
 matplotlib
 opencv-python
 scikit-learn

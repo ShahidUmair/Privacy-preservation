@@ -18,19 +18,20 @@ const ctx = document.getElementById('activityChart').getContext('2d');
 const chart = new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: Object.keys(counts),
+        labels: [],
         datasets: [{
-            label: 'Time Spent Today (Minutes)',
-            data: Object.values(counts),
-            backgroundColor: ['#22c55e', '#f43f5e', '#3b82f6'],
-            borderRadius: 6,
-            barThickness: 60  // 💡 Set bar thickness to prevent auto-shrink
+            label: 'Estimated Time Today (Minutes)',
+            data: [],
+            backgroundColor: '#b7ee65',
+            borderRadius: 2,
+            barThickness: 22
         }]
     },
     options: {
         responsive: true,
         maintainAspectRatio: false, // 💡 Ensure consistent layout
         animation: false, // ✅ Completely disables animation on update
+        indexAxis: 'y',
         plugins: {
             tooltip: {
                 enabled: true,
@@ -49,7 +50,7 @@ const chart = new Chart(ctx, {
             intersect: true
         },
         scales: {
-            y: {
+            x: {
                 beginAtZero: true,
                 ticks: {
                     color: '#cbd5e1'
@@ -58,7 +59,7 @@ const chart = new Chart(ctx, {
                     color: '#334155'
                 }
             },
-            x: {
+            y: {
                 ticks: {
                     color: '#cbd5e1'
                 },
@@ -72,11 +73,9 @@ const chart = new Chart(ctx, {
 
 function updateChart(label) {
     const activityMinutes = label.daily_activity_minutes || {};
-    counts = Object.fromEntries(Object.keys(counts).map(activity => [
-        activity,
-        activityMinutes[activity] || 0
-    ]));
-    chart.data.datasets[0].data = Object.values(counts);
+    const activities = Object.entries(activityMinutes).sort((left, right) => right[1] - left[1]);
+    chart.data.labels = activities.map(([activity]) => activity);
+    chart.data.datasets[0].data = activities.map(([, minutes]) => minutes);
     chart.update();
 }
 
@@ -90,6 +89,7 @@ function renderDashboard(data) {
     document.getElementById('dailyTotal').textContent = formatDuration(data.period_seconds.daily);
     document.getElementById('weeklyTotal').textContent = formatDuration(data.period_seconds.weekly);
     document.getElementById('monthlyTotal').textContent = formatDuration(data.period_seconds.monthly);
+    document.getElementById('latestActivityLabel').textContent = data.latest_activity || 'No activity recorded';
     updateChart(data);
 }
 

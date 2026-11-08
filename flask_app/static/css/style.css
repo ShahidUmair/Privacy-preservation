@@ -185,6 +185,22 @@ h1 {
     font-size: 0.9rem;
 }
 
+.latest-activity {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin: -8px 0 24px;
+    color: #91a1a1;
+    font-size: 0.85rem;
+}
+
+.latest-activity strong {
+    overflow-wrap: anywhere;
+    color: #eef4f3;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
 .summary-section {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));

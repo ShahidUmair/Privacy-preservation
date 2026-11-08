@@ -71,15 +71,19 @@ class ActivityStore:
             for name, (start, end) in periods.items()
         }
 
-        with sqlite3.connect(self.database_path) as connection:
+        with closing(sqlite3.connect(self.database_path)) as connection, connection:
             rows = connection.execute(
                 'SELECT label, COUNT(*) FROM activity '
                 'WHERE captured_at >= ? AND captured_at < ? GROUP BY label',
                 (today.timestamp(), min(tomorrow, now + timedelta(microseconds=1)).timestamp())
             ).fetchall()
+            latest = connection.execute(
+                'SELECT label FROM activity ORDER BY captured_at DESC, id DESC LIMIT 1'
+            ).fetchone()
 
         return {
             'period_seconds': period_seconds,
+            'latest_activity': latest[0] if latest else None,
             'daily_activity_minutes': {
                 label: round(count * CAPTURE_INTERVAL_SECONDS / 60, 2)
                 for label, count in rows
