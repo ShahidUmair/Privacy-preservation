@@ -15,7 +15,7 @@ const chart = new Chart(ctx, {
     data: {
         labels: Object.keys(counts),
         datasets: [{
-            label: 'Time Spent (Minutes)',
+            label: 'Time Spent Today (Minutes)',
             data: Object.values(counts),
             backgroundColor: ['#22c55e', '#f43f5e', '#3b82f6'],
             borderRadius: 6,
@@ -66,9 +66,38 @@ const chart = new Chart(ctx, {
 });
 
 function updateChart(label) {
-    counts[label]++;
+    const activityMinutes = label.daily_activity_minutes || {};
+    counts = Object.fromEntries(Object.keys(counts).map(activity => [
+        activity,
+        activityMinutes[activity] || 0
+    ]));
     chart.data.datasets[0].data = Object.values(counts);
     chart.update();
+}
+
+function formatDuration(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return hours ? `${hours}h ${minutes}m` : `${minutes}m`;
+}
+
+function renderDashboard(data) {
+    document.getElementById('dailyTotal').textContent = formatDuration(data.period_seconds.daily);
+    document.getElementById('weeklyTotal').textContent = formatDuration(data.period_seconds.weekly);
+    document.getElementById('monthlyTotal').textContent = formatDuration(data.period_seconds.monthly);
+    updateChart(data);
+}
+
+function loadDashboard() {
+    fetch('/dashboard')
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`Dashboard failed (${res.status}).`);
+            }
+            return res.json();
+        })
+        .then(renderDashboard)
+        .catch(error => console.error(error));
 }
 
 function startTracking() {
@@ -92,7 +121,7 @@ function startTracking() {
                 if (trackingInterval === null) {
                     return;
                 }
-                updateChart(data.activity);
+                renderDashboard(data.dashboard);
                 console.log("Tracked:", data.activity);
             })
             .catch(error => {
@@ -115,3 +144,5 @@ function stopTracking() {
     stopButton.disabled = true;
     trackingStatus.textContent = 'Tracking is stopped.';
 }
+
+loadDashboard();

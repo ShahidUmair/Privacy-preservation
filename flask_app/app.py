@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify
 from PIL import ImageGrab
+from activity_store import ActivityStore
 import time
 import os
 from tensorflow.keras.models import load_model
@@ -11,8 +12,7 @@ MODEL = load_model('../model/model.h5')
 LABELS = ['programming', 'youtube_entertainment', 'youtube_edu']
 screenshot_dir = "screenshots/captured_images"
 os.makedirs(screenshot_dir, exist_ok=True)
-
-activity_log = []
+activity_store = ActivityStore(os.path.join(app.instance_path, 'activity.sqlite3'))
 
 def capture_and_predict():
     filename = f"{int(time.time())}.png"
@@ -26,17 +26,21 @@ def capture_and_predict():
 
     prediction = MODEL.predict(img_arr)[0]
     label = LABELS[np.argmax(prediction)]
-    activity_log.append({'time': time.strftime('%H:%M:%S'), 'label': label})
+    activity_store.record(label)
     return label
 
 @app.route('/capture')
 def capture():
     label = capture_and_predict()
-    return jsonify({'status': 'captured', 'activity': label})
+    return jsonify({
+        'status': 'captured',
+        'activity': label,
+        'dashboard': activity_store.dashboard()
+    })
 
 @app.route('/dashboard')
 def dashboard():
-    return jsonify(activity_log)
+    return jsonify(activity_store.dashboard())
 
 @app.route('/')
 def index():
